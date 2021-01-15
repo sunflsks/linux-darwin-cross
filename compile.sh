@@ -35,6 +35,7 @@ else
     echo "Using previously cloned apple-libtapi"
 fi
 
+# Build and install TAPI
 cp -v betterBuild.sh apple-libtapi/build.sh
-cd apple-libtapi && ./build.sh
-mv build/bin/* "$DESTDIR/$PREFIX/bin/"
+cd apple-libtapi && ./build.sh && cd ..
+mv apple-libtapi/build/bin/* "$DESTDIR/$PREFIX/bin/"

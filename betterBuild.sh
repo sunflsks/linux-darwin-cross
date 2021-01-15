@@ -77,6 +77,7 @@ echo "## Building libtapi ##"
 echo ""
 
 $MAKE tapi -j5
+$MAKE libtapi -j5
 
 popd &>/dev/null
 popd &>/dev/null

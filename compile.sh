@@ -40,3 +40,22 @@ cp -v betterBuild.sh apple-libtapi/build.sh
 cd apple-libtapi && ./build.sh && cd "$ROOT_DIR"
 mv apple-libtapi/build/bin/* "$DESTDIR/$PREFIX/bin/"
 
+# Build and install LLVM
+printf "\nCompiling LLVM\n"
+cd llvm-project
+if [ -d build ]; then
+    rm -rf build;
+fi
+
+mkdir build && cd build
+cmake \
+    -G Ninja \
+    -DLLVM_ENABLE_PROJECTS="clang;lld" \
+    -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+    -DCMAKE_BUILD_TYPE=Release \
+    ../llvm
+ninja -j6
+
+env DESTDIR=output-temp ninja install
+cd "$ROOT_DIR"
+rsync -a llvm-project/build/output-temp "$DESTDIR"

@@ -17,7 +17,7 @@ fi
 
 ROOT_DIR="$PWD"
 
-mkdir -p "$DESTDIR/$PREFIX/bin"
+mkdir -p "$DESTDIR/$PREFIX"
 
 # Get LLVM
 if [[ ! -d llvm-project ]]; then
@@ -38,7 +38,7 @@ fi
 # Build and install TAPI
 cp -v betterBuild.sh apple-libtapi/build.sh
 cd apple-libtapi && ./build.sh && cd "$ROOT_DIR"
-mv apple-libtapi/build/bin/* "$DESTDIR/$PREFIX/bin/"
+mv apple-libtapi/build/{bin,lib} "$DESTDIR/$PREFIX/"
 
 # Build and install LLVM
 printf "\nCompiling LLVM\n"

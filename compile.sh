@@ -58,4 +58,4 @@ ninja -j6
 
 env DESTDIR=output-temp ninja install
 cd "$ROOT_DIR"
-rsync -a llvm-project/build/output-temp "$DESTDIR"
+rsync -a llvm-project/build/output-temp/* "$DESTDIR"

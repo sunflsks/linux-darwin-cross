@@ -37,5 +37,6 @@ fi
 
 # Build and install TAPI
 cp -v betterBuild.sh apple-libtapi/build.sh
-cd apple-libtapi && ./build.sh && cd ..
+cd apple-libtapi && ./build.sh && cd "$ROOT_DIR"
 mv apple-libtapi/build/bin/* "$DESTDIR/$PREFIX/bin/"
+

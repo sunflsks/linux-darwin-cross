@@ -6,6 +6,9 @@
 # Then, build the toolchain + obj2yaml/yaml2objc
 # Finally, get the cctools-port sources and build the cctools
 
+if [ -z "$LLVM_VER" ]; then
+    LLVM_VER=20210107
+fi
 
 if [ -z $DESTDIR ]; then
     export DESTDIR="$PWD/Output"
@@ -21,7 +24,7 @@ mkdir -p "$DESTDIR/$PREFIX"
 
 # Get LLVM
 if [[ ! -d llvm-project ]]; then
-    git clone --depth=1 git://github.com/apple/llvm-project
+    git clone -b "apple/stable/$LLVM_VER" --single-branch --depth=1 git://github.com/apple/llvm-project
 else
     echo "Using previously cloned LLVM"
 fi

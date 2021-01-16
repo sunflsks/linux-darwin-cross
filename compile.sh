@@ -18,24 +18,21 @@ function script_interrupt() {
 # Get PREFIX and DESTDIR
 
 function usage() {
-    echo "Usage: $0 -p PREFIX -d DESTDIR -a"
+    echo "Usage: $0 -p PREFIX -d DESTDIR -x"
     script_interrupt
 }
 
 unset PREFIX
 unset DESTDIR
-unset ALL_CCTOOLS_ENABLED
+unset HAS_LIBXAR
 
-while getopts "p:d:a" opts; do
+while getopts "p:d:" opts; do
     case "$opts" in
         p)
             PREFIX="${OPTARG}"
             ;;
         d)
             DESTDIR="${OPTARG}"
-            ;;
-        a)
-            ALL_CCTOOLS_ENABLED="YES"
             ;;
         *)
             usage
@@ -64,18 +61,14 @@ ROOT_DIR="$PWD"
 mkdir -p "$DESTDIR/$PREFIX"
 
 # TODO: Make this much, much better. Perhaps add ability to look in custom dir for libs?
-if [[ "$ALL_CCTOOLS_ENABLED" == "YES" ]]; then
-    echo "All options for CCTools will be enabled. Checking for necessary libraries..."
-    mkdir -p "$DESTDIR/$PREFIX/lib"
-    NECESSARY_LIBS=( "libxar.so" "libLTO.so" )
-    for lib in "${NECESSARY_LIBS[@]}"; do
-        if [ -f /usr/lib/"$lib" ]; then
-            cp "/usr/lib/$lib"* "$DESTDIR/$PREFIX/lib"
-        else
-            echo "Necessary library $lib missing!"
-            script_interrupt
-        fi
-    done
+echo "Checking for libraries (libxar.so)..."
+mkdir -p "$DESTDIR/$PREFIX/lib"
+
+if [ -f /usr/lib/libxar.so ]; then
+    cp -P /usr/lib/libxar.so* "$DESTDIR/$PREFIX/lib"
+else
+    echo "Optional library $lib missing!"
+    sleep 1
 fi
 
 function get_sources() {
@@ -140,12 +133,8 @@ function build_cctools_port() {
     # Build and install cctools-port
     cd cctools-port/cctools
     LIBS_DIR="$DESTDIR/$PREFIX/lib"
-    CONFIGURE_ARGS=""
+    CONFIGURE_ARGS="--enable-lto-support  --with-libtapi=$LIBS_DIR  --enable-tapi-support"
 
-    if [[ "$ALL_CCTOOLS_ENABLED" == "YES" ]]; then
-        CONFIGURE_ARGS+="--enable-lto-support --with-libxar=$LIBS_DIR --with-libtapi=$LIBS_DIR --enable-xar-support --enable-tapi-support"
-    fi
-    
     ./configure \
     --prefix="$PREFIX" \
     --target=aarch64-apple-darwin \

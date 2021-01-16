@@ -35,6 +35,21 @@ ROOT_DIR="$PWD"
 
 mkdir -p "$DESTDIR/$PREFIX"
 
+# TODO: Make this much, much better. Perhaps add ability to look in custom dir for libs?
+if [[ "$ALL_CCTOOLS_ENABLED" == "YES" ]]; then
+    echo "All options for CCTools will be enabled. Checking for necessary libraries..."
+    mkdir -p "$DESTDIR/$PREFIX/lib"
+    NECESSARY_LIBS=( "libxar.so" "libLTO.so" "libtapi.so" )
+    for lib in "${NECESSARY_LIBS[@]}"; do
+        if [ -f /usr/lib/"$lib" ]; then
+            cp "/usr/lib/$lib"* "$DESTDIR/$PREFIX/lib"
+        else
+            echo "Necessary library $lib missing!"
+            script_interrupt
+        fi
+    done
+fi
+
 # Get LLVM
 if [[ ! -d llvm-project ]]; then
     if [[ "$LLVM_VER" == "main" ]]; then

@@ -50,66 +50,78 @@ if [[ "$ALL_CCTOOLS_ENABLED" == "YES" ]]; then
     done
 fi
 
-# Get LLVM
-if [[ ! -d llvm-project ]]; then
-    if [[ "$LLVM_VER" == "main" ]]; then
-        LLVM_BRANCH="main"
+function get_sources() {
+    # Get LLVM
+    if [[ ! -d llvm-project ]]; then
+        if [[ "$LLVM_VER" == "main" ]]; then
+            LLVM_BRANCH="main"
+        else
+            LLVM_BRANCH="stable/$LLVM_VER"
+        fi
+        
+        git clone -b "apple/$LLVM_BRANCH" --single-branch --depth=1 git://github.com/apple/llvm-project
     else
-        LLVM_BRANCH="stable/$LLVM_VER"
+        echo "Using previously cloned LLVM"
     fi
-    
-    git clone -b "apple/$LLVM_BRANCH" --single-branch --depth=1 git://github.com/apple/llvm-project
-else
-    echo "Using previously cloned LLVM"
-fi
 
-# For some reason I cannot find a way to get TAPI to compile, so I'll just use
-# tpoechtrager's LLVM and TAPI. :(
+    # For some reason I cannot find a way to get TAPI to compile, so I'll just use
+    # tpoechtrager's LLVM and TAPI. :(
 
-if [[ ! -d apple-libtapi ]]; then
-    git clone -b "$LIBTAPI_VER" --single-branch --depth=1 git://github.com/tpoechtrager/apple-libtapi
-else
-    echo "Using previously cloned apple-libtapi"
-fi
+    if [[ ! -d apple-libtapi ]]; then
+        git clone -b "$LIBTAPI_VER" --single-branch --depth=1 git://github.com/tpoechtrager/apple-libtapi
+    else
+        echo "Using previously cloned apple-libtapi"
+    fi
 
-# Get cctools-port
-if [[ ! -d cctools-port ]]; then
-    git clone -b "$CCTOOLS_PORT_VER" --single-branch --depth=1 git://github.com/tpoechtrager/cctools-port
-fi
+    # Get cctools-port
+    if [[ ! -d cctools-port ]]; then
+        git clone -b "$CCTOOLS_PORT_VER" --single-branch --depth=1 git://github.com/tpoechtrager/cctools-port
+    fi
+}
 
-# Build and install TAPI
-cp -v betterBuild.sh apple-libtapi/build.sh
-cd apple-libtapi && ./build.sh && cd "$ROOT_DIR"
-mv apple-libtapi/build/{bin,lib} "$DESTDIR/$PREFIX/"
+function build_tapi() {
+    # Build and install TAPI
+    cp -v betterBuild.sh apple-libtapi/build.sh
+    cd apple-libtapi && ./build.sh && cd "$ROOT_DIR"
+    mv apple-libtapi/build/{bin,lib} "$DESTDIR/$PREFIX/"
+}
 
-# Build and install LLVM
-printf "\nCompiling LLVM\n"
-cd llvm-project
-if [ -d build ]; then
-    rm -rf build;
-fi
+function build_llvm() {
+    # Build and install LLVM
+    printf "\nCompiling LLVM\n"
+    cd llvm-project
+    if [ -d build ]; then
+        rm -rf build;
+    fi
 
-mkdir build && cd build
-cmake \
-    -G Ninja \
-    -DLLVM_ENABLE_PROJECTS="clang;obj2yaml;yaml2obj" \
-    -DCMAKE_INSTALL_PREFIX="$PREFIX" \
-    -DCMAKE_BUILD_TYPE=Release \
-    ../llvm
-ninja -j6
+    mkdir build && cd build
+    cmake \
+        -G Ninja \
+        -DLLVM_ENABLE_PROJECTS="clang;obj2yaml;yaml2obj" \
+        -DCMAKE_INSTALL_PREFIX="$PREFIX" \
+        -DCMAKE_BUILD_TYPE=Release \
+        ../llvm
+    ninja -j6
 
-env DESTDIR=output-temp ninja install
-cd "$ROOT_DIR"
-rsync -a llvm-project/build/output-temp/* "$DESTDIR"
+    env DESTDIR=output-temp ninja install
+    cd "$ROOT_DIR"
+    rsync -a llvm-project/build/output-temp/* "$DESTDIR"
+}
 
-# Build and install cctools-port
-cd cctools-port/cctools
-LIBTAPI_DIR="$DESTDIR/$PREFIX/lib"
-./configure \
-    --prefix="$PREFIX" \
-    --with-libtapi="$LIBTAPI_DIR" \
-    --target=aarch64-apple-darwin
+function build_cctools_port() {
+    # Build and install cctools-port
+    cd cctools-port/cctools
+    LIBTAPI_DIR="$DESTDIR/$PREFIX/lib"
+    ./configure \
+        --prefix="$PREFIX" \
+        --with-libtapi="$LIBTAPI_DIR" \
+        --target=aarch64-apple-darwin
 
-make -j5
-make DESTDIR="$DESTDIR" install
+    make -j5
+    make DESTDIR="$DESTDIR" install
+}
 
+get_sources
+build_tapi
+build_llvm
+build_cctools_port

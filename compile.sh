@@ -22,7 +22,9 @@ echo "cctools-port Version: $CCTOOLS_PORT_VER"
 sleep 1
 
 if [ -z $DESTDIR ]; then
-    export DESTDIR="$PWD/Output"
+    export DESTDIR="$(realpath Output)"
+else
+    DESTDIR="$(realpath $DESTDIR)"
 fi
 
 if [ -z $PREFIX ]; then

@@ -184,6 +184,31 @@ function build_ldid2() {
     cd "$ROOT_DIR"
 }
 
+function strip_binaries() {
+    echo "Stripping binaries..."
+    cd "$DESTDIR/$PREFIX/bin"
+    for file in ./*; do
+        case "$(file -S -bi $file)" in
+            *application/x-sharedlib*)
+                STRIPFLAGS="--strip-unneeded"
+                ;;
+            *application/x-archive*)
+                STRIPFLAGS="--strip-debug"
+                ;;
+            *application/x-executable*)
+                STRIPFLAGS="--strip-all"
+                ;;
+            *application/x-pie-executable*)
+                STRIPFLAGS="--strip-unneeded"
+                ;;
+            *)
+                continue
+        esac
+        strip "$STRIPFLAGS" "$file"
+    done
+    cd "$ROOT_DIR"
+}
+
 get_sources
 build_tapi
 build_llvm
@@ -194,3 +219,5 @@ build_ldid2
 if [[ "$REMOVE_PREFIXES" ]]; then
     remove_prefixes
 fi
+
+strip_binaries

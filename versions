@@ -1,11 +1,17 @@
 if [ -z "$LLVM_VER" ]; then
     LLVM_VER="main"
+else
+    echo "Using manually specified LLVM version $LLVM_VER"
 fi
 
 if [ -z "$LIBTAPI_VER" ]; then
     LIBTAPI_VER="master"
+else
+    echo "Using manually specified apple-libtapi version $LIBTAPI_VER"
 fi
 
 if [ -z "$CCTOOLS_PORT_VER" ]; then
     CCTOOLS_PORT_VER="master"
+else
+    echo "Using manually specified cctools-port version $CCTOOLS_PORT_VER"
 fi

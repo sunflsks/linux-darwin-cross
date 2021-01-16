@@ -8,6 +8,12 @@
 
 source versions
 
+echo "Apple LLVM Version: $LLVM_VER"
+echo "apple-libtapi Version: $LIBTAPI_VER"
+echo "cctools-port Version: $CCTOOLS_PORT_VER"
+
+sleep 1
+
 if [ -z $DESTDIR ]; then
     export DESTDIR="$PWD/Output"
 fi

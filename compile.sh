@@ -6,9 +6,7 @@
 # Then, build the toolchain + obj2yaml/yaml2objc
 # Finally, get the cctools-port sources and build the cctools
 
-if [ -z "$LLVM_VER" ]; then
-    LLVM_VER=20210107
-fi
+source versions
 
 if [ -z $DESTDIR ]; then
     export DESTDIR="$PWD/Output"
@@ -33,14 +31,14 @@ fi
 # tpoechtrager's LLVM and TAPI. :(
 
 if [[ ! -d apple-libtapi ]]; then
-    git clone --depth=1 git://github.com/tpoechtrager/apple-libtapi
+    git clone -b "$LIBTAPI_VER" --single-branch --depth=1 git://github.com/tpoechtrager/apple-libtapi
 else
     echo "Using previously cloned apple-libtapi"
 fi
 
 # Get cctools-port
 if [[ ! -d cctools-port ]]; then
-    git clone git://github.com/tpoechtrager/cctools-port
+    git clone -b "$CCTOOLS_PORT_VER" --single-branch --depth=1 git://github.com/tpoechtrager/cctools-port
 fi
 
 # Build and install TAPI
@@ -58,7 +56,7 @@ fi
 mkdir build && cd build
 cmake \
     -G Ninja \
-    -DLLVM_ENABLE_PROJECTS="clang;lld" \
+    -DLLVM_ENABLE_PROJECTS="clang;obj2yaml;yaml2obj" \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_BUILD_TYPE=Release \
     ../llvm

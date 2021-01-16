@@ -1,0 +1,11 @@
+if [ -z "$LLVM_VER" ]; then
+    LLVM_VER="master"
+fi
+
+if [ -z "$LIBTAPI_VER" ]; then
+    LIBTAPI_VER="master"
+fi
+
+if [ -z "$CCTOOLS_PORT_VER" ]; then
+    CCTOOLS_PORT_VER="master"
+fi

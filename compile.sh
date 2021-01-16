@@ -184,9 +184,9 @@ function build_ldid2() {
 }
 
 get_sources
-#build_tapi
-#build_llvm
-#build_cctools_port
+build_tapi
+build_llvm
+build_cctools_port
 build_libplist
 build_ldid2
 

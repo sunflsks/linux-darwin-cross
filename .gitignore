@@ -2,3 +2,6 @@ Output
 llvm-project
 apple-libtapi
 cctools-port
+ldid
+libplist
+pkg

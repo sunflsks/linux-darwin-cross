@@ -24,15 +24,18 @@ function usage() {
 
 unset PREFIX
 unset DESTDIR
-unset HAS_LIBXAR
+unset REMOVE_PREFIXES
 
-while getopts "p:d:" opts; do
+while getopts "p:d:r" opts; do
     case "$opts" in
         p)
             PREFIX="${OPTARG}"
             ;;
         d)
             DESTDIR="${OPTARG}"
+            ;;
+        r)
+            REMOVE_PREFIXES="YES"
             ;;
         *)
             usage
@@ -144,7 +147,20 @@ function build_cctools_port() {
     make DESTDIR="$DESTDIR" install
 }
 
+function remove_prefixes() {
+    cd "$DESTDIR/$PREFIX/bin"
+    
+    for file in ./aarch64*; do
+        ## aarch64-apple-darwin- character count is 22
+        NEWFILENAME="$(echo $file | cut -b 24-)"
+        mv "$file" "$NEWFILENAME"
+    done
+}
 get_sources
-build_tapi
-build_llvm
+#build_tapi
+#build_llvm
 build_cctools_port
+
+if [[ "$REMOVE_PREFIXES" ]]; then
+    remove_prefixes
+fi

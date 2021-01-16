@@ -35,6 +35,11 @@ else
     echo "Using previously cloned apple-libtapi"
 fi
 
+# Get cctools-port
+if [[ ! -d cctools-port ]]; then
+    git clone git://github.com/tpoechtrager/cctools-port
+fi
+
 # Build and install TAPI
 cp -v betterBuild.sh apple-libtapi/build.sh
 cd apple-libtapi && ./build.sh && cd "$ROOT_DIR"
@@ -59,3 +64,15 @@ ninja -j6
 env DESTDIR=output-temp ninja install
 cd "$ROOT_DIR"
 rsync -a llvm-project/build/output-temp/* "$DESTDIR"
+
+# Build and install cctools-port
+cd cctools-port/cctools
+LIBTAPI_DIR="$DESTDIR/$PREFIX/lib"
+./configure \
+    --prefix="$PREFIX" \
+    --with-libtapi="$LIBTAPI_DIR" \
+    --target=aarch64-apple-darwin
+
+make -j5
+make DESTDIR="$DESTDIR" install
+

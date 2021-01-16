@@ -61,7 +61,7 @@ fi
 
 ROOT_DIR="$PWD"
 
-mkdir -p "$DESTDIR/$PREFIX"
+mkdir -p "$DESTDIR/$PREFIX/bin"
 
 # TODO: Make this much, much better. Perhaps add ability to look in custom dir for libs?
 echo "Checking for libraries (libxar.so)..."
@@ -100,6 +100,10 @@ function get_sources() {
     # Get cctools-port
     if [[ ! -d cctools-port ]]; then
         git clone -b "$CCTOOLS_PORT_VER" --single-branch --depth=1 git://github.com/tpoechtrager/cctools-port
+    fi
+    
+    if [[ ! -d ldid ]]; then
+        git clone --depth=1 git://github.com/xerub/ldid
     fi
 }
 
@@ -156,10 +160,18 @@ function remove_prefixes() {
         mv "$file" "$NEWFILENAME"
     done
 }
+
+function build_ldid2() {
+    cd ldid
+    bash make.sh
+    cp ldid ldid2 "$DESTDIR/$PREFIX/bin"
+}
+
 get_sources
 build_tapi
 build_llvm
 build_cctools_port
+build_ldid2
 
 if [[ "$REMOVE_PREFIXES" ]]; then
     remove_prefixes

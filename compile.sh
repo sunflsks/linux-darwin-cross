@@ -157,8 +157,8 @@ function remove_prefixes() {
     done
 }
 get_sources
-#build_tapi
-#build_llvm
+build_tapi
+build_llvm
 build_cctools_port
 
 if [[ "$REMOVE_PREFIXES" ]]; then

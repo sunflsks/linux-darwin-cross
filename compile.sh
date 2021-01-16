@@ -103,7 +103,11 @@ function get_sources() {
     fi
     
     if [[ ! -d ldid ]]; then
-        git clone --depth=1 git://github.com/xerub/ldid
+        git clone --depth=1 git://git.saurik.com/ldid.git
+    fi
+    
+    if [[ ! -d libplist ]]; then
+        git clone --branch "$LIBPLIST_VER" --depth=1 git://github.com/libimobiledevice/libplist
     fi
 }
 
@@ -163,17 +167,27 @@ function remove_prefixes() {
     cd "$ROOT_DIR"
 }
 
+function build_libplist() {
+    cd libplist
+    ./autogen.sh --prefix="$PREFIX"
+    make -j5
+    make DESTDIR="$DESTDIR" install
+    cd "$ROOT_DIR"
+}
+
 function build_ldid2() {
+    cp make.sh ldid/
     cd ldid
-    bash make.sh
-    cp ldid ldid2 "$DESTDIR/$PREFIX/bin"
+    (export PREFIX DESTDIR && bash make.sh)
+    cp out/ldid "$DESTDIR/$PREFIX/bin"
     cd "$ROOT_DIR"
 }
 
 get_sources
-build_tapi
-build_llvm
-build_cctools_port
+#build_tapi
+#build_llvm
+#build_cctools_port
+build_libplist
 build_ldid2
 
 if [[ "$REMOVE_PREFIXES" ]]; then

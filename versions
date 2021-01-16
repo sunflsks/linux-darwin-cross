@@ -15,3 +15,9 @@ if [ -z "$CCTOOLS_PORT_VER" ]; then
 else
     echo "Using manually specified cctools-port version $CCTOOLS_PORT_VER"
 fi
+
+if [ -z "$LIBPLIST_VER" ]; then
+    LIBPLIST_VER=master
+else
+    echo "Using manually specified libplist version $LIBPLIST_VER"
+fi

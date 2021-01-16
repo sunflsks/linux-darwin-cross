@@ -149,6 +149,7 @@ function build_cctools_port() {
 
     make -j5
     make DESTDIR="$DESTDIR" install
+    cd "$ROOT_DIR"
 }
 
 function remove_prefixes() {
@@ -159,12 +160,14 @@ function remove_prefixes() {
         NEWFILENAME="$(echo $file | cut -b 24-)"
         mv "$file" "$NEWFILENAME"
     done
+    cd "$ROOT_DIR"
 }
 
 function build_ldid2() {
     cd ldid
     bash make.sh
     cp ldid ldid2 "$DESTDIR/$PREFIX/bin"
+    cd "$ROOT_DIR"
 }
 
 get_sources

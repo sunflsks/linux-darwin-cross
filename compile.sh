@@ -113,7 +113,7 @@ function get_sources() {
 
 function build_tapi() {
     # Build and install TAPI
-    cp -v betterBuild.sh apple-libtapi/build.sh
+    cp -v fixed-scripts/betterBuild.sh apple-libtapi/build.sh
     cd apple-libtapi && ./build.sh && cd "$ROOT_DIR"
     mv apple-libtapi/build/{bin,lib} "$DESTDIR/$PREFIX/"
 }
@@ -176,7 +176,7 @@ function build_libplist() {
 }
 
 function build_ldid2() {
-    cp make.sh ldid/
+    cp fixed-scripts/make.sh ldid/
     cd ldid
     (export PREFIX DESTDIR && bash make.sh)
     cp out/ldid "$DESTDIR/$PREFIX/bin"

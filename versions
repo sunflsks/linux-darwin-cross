@@ -1,23 +1,23 @@
 if [ -z "$LLVM_VER" ]; then
-    LLVM_VER="main"
+    LLVM_VER="20210107"
 else
     echo "Using manually specified LLVM version $LLVM_VER"
 fi
 
 if [ -z "$LIBTAPI_VER" ]; then
-    LIBTAPI_VER="master"
+    LIBTAPI_VER="1100.0.11"
 else
     echo "Using manually specified apple-libtapi version $LIBTAPI_VER"
 fi
 
 if [ -z "$CCTOOLS_PORT_VER" ]; then
-    CCTOOLS_PORT_VER="master"
+    CCTOOLS_PORT_VER="949.0.1-ld64-530"
 else
     echo "Using manually specified cctools-port version $CCTOOLS_PORT_VER"
 fi
 
 if [ -z "$LIBPLIST_VER" ]; then
-    LIBPLIST_VER=master
+    LIBPLIST_VER="2.2.0"
 else
     echo "Using manually specified libplist version $LIBPLIST_VER"
 fi

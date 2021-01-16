@@ -8,6 +8,13 @@
 
 source versions
 
+trap script_interrupt INT
+
+function script_interrupt() {
+	echo "Exiting..."
+	exit 1
+}
+
 echo "Apple LLVM Version: $LLVM_VER"
 echo "apple-libtapi Version: $LIBTAPI_VER"
 echo "cctools-port Version: $CCTOOLS_PORT_VER"

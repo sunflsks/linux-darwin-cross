@@ -1,5 +1,5 @@
 if [ -z "$LLVM_VER" ]; then
-    LLVM_VER="master"
+    LLVM_VER="main"
 fi
 
 if [ -z "$LIBTAPI_VER" ]; then

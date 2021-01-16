@@ -22,13 +22,13 @@ mkdir -p "$DESTDIR/$PREFIX"
 
 # Get LLVM
 if [[ ! -d llvm-project ]]; then
-    if [[ "$LLVM_VER" == "master" ]]; then
-        LLVM_BRANCH="master"
+    if [[ "$LLVM_VER" == "main" ]]; then
+        LLVM_BRANCH="main"
     else
-        LLVM_BRANCH="apple/stable/$LLVM_VER"
+        LLVM_BRANCH="stable/$LLVM_VER"
     fi
     
-    git clone -b "$LLVM_BRANCH" --single-branch --depth=1 git://github.com/apple/llvm-project
+    git clone -b "apple/$LLVM_BRANCH" --single-branch --depth=1 git://github.com/apple/llvm-project
 else
     echo "Using previously cloned LLVM"
 fi

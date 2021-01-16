@@ -186,8 +186,9 @@ function build_ldid2() {
 
 function strip_binaries() {
     echo "Stripping binaries..."
-    cd "$DESTDIR/$PREFIX/bin"
-    for file in ./*; do
+    
+    for file in "$DESTDIR/$PREFIX/"**/*; do
+
         case "$(file -S -bi $file)" in
             *application/x-sharedlib*)
                 STRIPFLAGS="--strip-unneeded"

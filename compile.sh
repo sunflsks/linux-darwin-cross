@@ -15,6 +15,34 @@ function script_interrupt() {
 	exit 1
 }
 
+# Get PREFIX and DESTDIR
+
+function usage() {
+    echo "Usage: $0 -p PREFIX -d DESTDIR -a"
+    script_interrupt
+}
+
+unset PREFIX
+unset DESTDIR
+unset ALL_CCTOOLS_ENABLED
+
+while getopts "p:d:a" opts; do
+    case "$opts" in
+        p)
+            PREFIX="${OPTARG}"
+            ;;
+        d)
+            DESTDIR="${OPTARG}"
+            ;;
+        a)
+            ALL_CCTOOLS_ENABLED="YES"
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
 echo "Apple LLVM Version: $LLVM_VER"
 echo "apple-libtapi Version: $LIBTAPI_VER"
 echo "cctools-port Version: $CCTOOLS_PORT_VER"

@@ -210,6 +210,13 @@ function strip_binaries() {
     cd "$ROOT_DIR"
 }
 
+function fix_ld() {
+    cd "$DESTDIR/$PREFIX/bin"
+    mv ld ld64
+    install -Dm755 "$ROOT_DIR/fixed-scripts/ld_wrapper" ld
+    cd "$ROOT_DIR"
+}
+
 get_sources
 build_tapi
 build_llvm
@@ -221,4 +228,5 @@ if [[ "$REMOVE_PREFIXES" ]]; then
     remove_prefixes
 fi
 
+fix_ld
 strip_binaries

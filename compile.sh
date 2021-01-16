@@ -67,7 +67,7 @@ mkdir -p "$DESTDIR/$PREFIX"
 if [[ "$ALL_CCTOOLS_ENABLED" == "YES" ]]; then
     echo "All options for CCTools will be enabled. Checking for necessary libraries..."
     mkdir -p "$DESTDIR/$PREFIX/lib"
-    NECESSARY_LIBS=( "libxar.so" "libLTO.so" "libtapi.so" )
+    NECESSARY_LIBS=( "libxar.so" "libLTO.so" )
     for lib in "${NECESSARY_LIBS[@]}"; do
         if [ -f /usr/lib/"$lib" ]; then
             cp "/usr/lib/$lib"* "$DESTDIR/$PREFIX/lib"
@@ -139,11 +139,17 @@ function build_llvm() {
 function build_cctools_port() {
     # Build and install cctools-port
     cd cctools-port/cctools
-    LIBTAPI_DIR="$DESTDIR/$PREFIX/lib"
+    LIBS_DIR="$DESTDIR/$PREFIX/lib"
+    CONFIGURE_ARGS=""
+
+    if [[ "$ALL_CCTOOLS_ENABLED" == "YES" ]]; then
+        CONFIGURE_ARGS+="--enable-lto-support --with-libxar=$LIBS_DIR --with-libtapi=$LIBS_DIR --enable-xar-support --enable-tapi-support"
+    fi
+    
     ./configure \
-        --prefix="$PREFIX" \
-        --with-libtapi="$LIBTAPI_DIR" \
-        --target=aarch64-apple-darwin
+    --prefix="$PREFIX" \
+    --target=aarch64-apple-darwin \
+    $CONFIGURE_ARGS
 
     make -j5
     make DESTDIR="$DESTDIR" install

@@ -29,7 +29,7 @@ unset REMOVE_PREFIXES
 while getopts "p:d:r" opts; do
     case "$opts" in
         p)
-            PREFIX="${OPTARG}"
+            PREFIX="/${OPTARG}"
             ;;
         d)
             DESTDIR="${OPTARG}"

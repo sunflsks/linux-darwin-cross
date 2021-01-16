@@ -46,6 +46,7 @@ done
 echo "Apple LLVM Version: $LLVM_VER"
 echo "apple-libtapi Version: $LIBTAPI_VER"
 echo "cctools-port Version: $CCTOOLS_PORT_VER"
+echo "libplist Version: $LIBPLIST_VER"
 
 sleep 1
 

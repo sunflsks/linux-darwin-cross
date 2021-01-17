@@ -1,0 +1,20 @@
+--- a/llvm-project/llvm/tools/dsymutil/BinaryHolder.cpp	2021-01-16 23:43:54.399752786 -0600
++++ b/llvm-project/llvm/tools/dsymutil/BinaryHolder.cpp	2021-01-17 09:56:55.042584322 -0600
+@@ -96,17 +95,6 @@
+   if (auto Err = ErrOrBuff.getError())
+     return errorCodeToError(Err);
+ 
+-  if (Filename != "-" && Timestamp != sys::TimePoint<>()) {
+-    llvm::ErrorOr<vfs::Status> Stat = VFS->status(Filename);
+-    if (!Stat)
+-      return errorCodeToError(Stat.getError());
+-    if (Timestamp != Stat->getLastModificationTime())
+-      WithColor::warning() << Filename
+-                           << ": timestamp mismatch between object file ("
+-                           << Stat->getLastModificationTime()
+-                           << ") and debug map (" << Timestamp << ")\n";
+-  }
+-
+   MemBuffer = std::move(*ErrOrBuff);
+ 
+   if (Verbose)

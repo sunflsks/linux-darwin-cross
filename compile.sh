@@ -219,7 +219,15 @@ function fix_ld() {
     cd "$ROOT_DIR"
 }
 
+function patch_files() {
+    for file in patches/*.patch; do
+        patch -p1 < "$file"
+        sleep 1
+    done
+}
+
 get_sources
+patch_files
 build_tapi
 build_llvm
 build_cctools_port

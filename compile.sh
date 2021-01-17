@@ -130,9 +130,11 @@ function build_llvm() {
     mkdir build && cd build
     cmake \
         -G Ninja \
-        -DLLVM_ENABLE_PROJECTS="clang;obj2yaml;yaml2obj" \
         -DCMAKE_INSTALL_PREFIX="$PREFIX" \
         -DCMAKE_BUILD_TYPE=Release \
+        -DLLVM_ENABLE_RTTI=ON \
+        -DLLVM_INSTALL_UTILS=ON \
+        -DLLVM_ENABLE_PROJECTS="clang" \
         ../llvm
     ninja -j6
 

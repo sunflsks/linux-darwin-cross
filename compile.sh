@@ -116,7 +116,7 @@ function build_tapi() {
     # Build and install TAPI
     cp -v fixed-scripts/betterBuild.sh apple-libtapi/build.sh
     cd apple-libtapi && ./build.sh && cd "$ROOT_DIR"
-    mv apple-libtapi/build/{bin,lib} "$DESTDIR/$PREFIX/"
+    rsync -av apple-libtapi/build/{bin,lib} "$DESTDIR/$PREFIX/"
 }
 
 function build_llvm() {

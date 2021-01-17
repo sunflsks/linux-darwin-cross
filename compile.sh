@@ -50,13 +50,13 @@ echo "libplist Version: $LIBPLIST_VER"
 
 sleep 1
 
-if [ -z $DESTDIR ]; then
-    export DESTDIR="$(realpath Output)"
+if [ -z "$DESTDIR" ]; then
+    DESTDIR="$(realpath Output)"
 else
-    DESTDIR="$(realpath $DESTDIR)"
+    DESTDIR="$(realpath "$DESTDIR")"
 fi
 
-if [ -z $PREFIX ]; then
+if [ -z "$PREFIX" ]; then
     PREFIX="/usr/local/opt/cross/apple/arm-apple-darwin"
 fi
 
@@ -71,7 +71,7 @@ mkdir -p "$DESTDIR/$PREFIX/lib"
 if [ -f /usr/lib/libxar.so ]; then
     cp -P /usr/lib/libxar.so* "$DESTDIR/$PREFIX/lib"
 else
-    echo "Optional library $lib missing!"
+    echo "Optional library libxar.so missing!"
     sleep 1
 fi
 
@@ -164,7 +164,7 @@ function remove_prefixes() {
     
     for file in ./aarch64*; do
         ## aarch64-apple-darwin- character count is 22
-        NEWFILENAME="$(echo $file | cut -b 24-)"
+        NEWFILENAME="$(echo "$file" | cut -b 24-)"
         mv "$file" "$NEWFILENAME"
     done
     cd "$ROOT_DIR"
@@ -181,7 +181,7 @@ function build_libplist() {
 function build_ldid2() {
     cp fixed-scripts/make.sh ldid/
     cd ldid
-    (export PREFIX DESTDIR && bash make.sh)
+    (export PREFIX="$PREFIX" DESTDIR="$DESTDIR" && bash make.sh)
     cp out/ldid "$DESTDIR/$PREFIX/bin"
     cd "$ROOT_DIR"
 }
@@ -191,7 +191,7 @@ function strip_binaries() {
     
     for file in "$DESTDIR/$PREFIX/"**/*; do
 
-        case "$(file -S -bi $file)" in
+        case "$(file -S -bi "$file")" in
             *application/x-sharedlib*)
                 STRIPFLAGS="--strip-unneeded"
                 ;;
